@@ -1,0 +1,57 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Bosch eBike (Smart System)",
+        "description": "Connect your Bosch Smart System eBike to Home Assistant using the Bosch Data Act API. Before continuing, make sure you have registered an application on the Bosch Data Act Portal and entered your Client ID and Client Secret via **Settings → Devices & Services → Application Credentials**."
+      },
+      "unit_system": {
+        "title": "Unit System",
+        "description": "Choose the unit system for distance, speed, and elevation sensors.",
+        "data": {
+          "unit_system": "Unit system"
+        },
+        "data_description": {
+          "unit_system": "Select the unit system to use for all distance, speed, and elevation sensors."
+        }
+      },
+      "reauth_confirm": {
+        "title": "Re-authenticate with Bosch",
+        "description": "Your Bosch eBike integration needs to re-authenticate. Click **Submit** to restart the OAuth2 flow."
+      }
+    },
+    "abort": {
+      "missing_credentials": "No application credentials found for Bosch eBike. Please add your Bosch Data Act Portal Client ID and Client Secret via **Settings → Devices & Services → Application Credentials**, then try again.",
+      "application_not_approved": "Your Bosch Data Act Portal application has not yet been approved by Bosch. Please check your email for an approval notification and try again once your application is approved.",
+      "api_error": "An API error occurred while verifying your credentials. Please check your Client ID and Client Secret and try again.",
+      "unknown": "An unexpected error occurred. Please check the Home Assistant logs for details.",
+      "already_configured": "This Bosch account is already configured."
+    },
+    "error": {
+      "application_not_approved": "Your Bosch Data Act Portal application has not yet been approved. Check your email for an approval notification.",
+      "missing_credentials": "No application credentials found. Please add your Client ID and Client Secret first."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Bosch eBike Options",
+        "description": "Change the unit system used for distance, speed, and elevation sensors. Saving will reload the integration.",
+        "data": {
+          "unit_system": "Unit system"
+        },
+        "data_description": {
+          "unit_system": "Select the unit system to use for all distance, speed, and elevation sensors."
+        }
+      }
+    }
+  },
+  "selector": {
+    "unit_system": {
+      "options": {
+        "metric": "Metric (km, km/h, m)",
+        "imperial": "Imperial (miles, mph, feet)"
+      }
+    }
+  }
+}

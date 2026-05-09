@@ -1,0 +1,12 @@
+{
+  "domain": "bosch_ebike_ha",
+  "name": "Bosch eBike (Smart System)",
+  "version": "1.0.0",
+  "documentation": "https://github.com/<owner>/bosch-ebike-ha-addon",
+  "issue_tracker": "https://github.com/<owner>/bosch-ebike-ha-addon/issues",
+  "codeowners": ["@<owner>"],
+  "requirements": ["aiohttp>=3.9.0"],
+  "dependencies": ["application_credentials"],
+  "config_flow": true,
+  "iot_class": "cloud_polling"
+}
