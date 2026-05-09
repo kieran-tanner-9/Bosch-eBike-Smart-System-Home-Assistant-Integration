@@ -71,11 +71,8 @@ class BoschEBikeConfigFlow(
         Application Credentials UI with a descriptive message (Req 1.6).
         """
         credentials = await async_get_application_credentials(self.hass)
-        domain_credentials = [
-            c for c in credentials if c.get("domain") == DOMAIN
-        ]
 
-        if not domain_credentials:
+        if not credentials:
             # No credentials registered — send the user to the Application
             # Credentials UI so they can enter their Data Act Portal
             # client_id and client_secret.
