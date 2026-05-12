@@ -156,54 +156,46 @@ def _make_sensor(
 class TestOptionsFlowSubmit:
     """Unit tests for BoschEBikeOptionsFlow.async_step_init."""
 
-    def test_options_flow_shows_form_when_no_input(self):
+    @pytest.mark.asyncio
+    async def test_options_flow_shows_form_when_no_input(self):
         """async_step_init with no user_input must return a form."""
         entry = _make_config_entry(UNIT_METRIC)
         flow = BoschEBikeOptionsFlow(entry)
 
-        import asyncio
-        result = asyncio.get_event_loop().run_until_complete(
-            flow.async_step_init(user_input=None)
-        )
+        result = await flow.async_step_init(user_input=None)
 
         assert result["type"] == "form"
         assert result["step_id"] == "init"
 
-    def test_options_flow_creates_entry_with_imperial(self):
+    @pytest.mark.asyncio
+    async def test_options_flow_creates_entry_with_imperial(self):
         """Submitting imperial must return async_create_entry with imperial data."""
         entry = _make_config_entry(UNIT_METRIC)
         flow = BoschEBikeOptionsFlow(entry)
 
-        import asyncio
-        result = asyncio.get_event_loop().run_until_complete(
-            flow.async_step_init(user_input={CONF_UNIT_SYSTEM: UNIT_IMPERIAL})
-        )
+        result = await flow.async_step_init(user_input={CONF_UNIT_SYSTEM: UNIT_IMPERIAL})
 
         assert result["type"] == "create_entry"
         assert result["data"][CONF_UNIT_SYSTEM] == UNIT_IMPERIAL
 
-    def test_options_flow_creates_entry_with_metric(self):
+    @pytest.mark.asyncio
+    async def test_options_flow_creates_entry_with_metric(self):
         """Submitting metric must return async_create_entry with metric data."""
         entry = _make_config_entry(UNIT_IMPERIAL)
         flow = BoschEBikeOptionsFlow(entry)
 
-        import asyncio
-        result = asyncio.get_event_loop().run_until_complete(
-            flow.async_step_init(user_input={CONF_UNIT_SYSTEM: UNIT_METRIC})
-        )
+        result = await flow.async_step_init(user_input={CONF_UNIT_SYSTEM: UNIT_METRIC})
 
         assert result["type"] == "create_entry"
         assert result["data"][CONF_UNIT_SYSTEM] == UNIT_METRIC
 
-    def test_options_flow_form_prepopulated_with_current_value(self):
+    @pytest.mark.asyncio
+    async def test_options_flow_form_prepopulated_with_current_value(self):
         """The form schema default must reflect the current unit_system option."""
         entry = _make_config_entry(UNIT_IMPERIAL)
         flow = BoschEBikeOptionsFlow(entry)
 
-        import asyncio
-        result = asyncio.get_event_loop().run_until_complete(
-            flow.async_step_init(user_input=None)
-        )
+        result = await flow.async_step_init(user_input=None)
 
         # The schema should be present and the default should be imperial
         assert result["type"] == "form"
@@ -602,7 +594,8 @@ class TestMetricToImperialTransition:
                 f"expected one of {metric_units}"
             )
 
-    def test_options_flow_result_contains_correct_unit_system(self):
+    @pytest.mark.asyncio
+    async def test_options_flow_result_contains_correct_unit_system(self):
         """The options flow result data must contain the submitted unit_system.
 
         Verifies the contract between the options flow and the config entry
@@ -610,14 +603,10 @@ class TestMetricToImperialTransition:
 
         Requirements: 13.5
         """
-        import asyncio
-
         # Start with metric, submit imperial
         entry = _make_config_entry(UNIT_METRIC)
         flow = BoschEBikeOptionsFlow(entry)
-        result = asyncio.get_event_loop().run_until_complete(
-            flow.async_step_init(user_input={CONF_UNIT_SYSTEM: UNIT_IMPERIAL})
-        )
+        result = await flow.async_step_init(user_input={CONF_UNIT_SYSTEM: UNIT_IMPERIAL})
 
         assert result["type"] == "create_entry"
         assert result["data"] == {CONF_UNIT_SYSTEM: UNIT_IMPERIAL}

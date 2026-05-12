@@ -74,7 +74,7 @@ You will need these during the Home Assistant setup.
 2. Click the three-dot menu (⋮) in the top-right corner and select **Custom repositories**.
 3. Enter the repository URL:
    ```
-   https://github.com/<owner>/bosch-ebike-ha-addon
+   https://github.com/kieran-tanner-9/Bosch-eBike-Smart-System-Home-Assistant-Integration
    ```
 4. Set the category to **Integration** and click **Add**.
 5. The integration will appear in the HACS integration list. Click **Download** to install it.
@@ -293,5 +293,5 @@ If a new version of the integration is available but not showing in HACS, try cl
 
 ## Support
 
-- **Bug reports and feature requests:** [GitHub Issues](https://github.com/<owner>/bosch-ebike-ha-addon/issues)
-- **Documentation:** [GitHub Repository](https://github.com/<owner>/bosch-ebike-ha-addon)
+- **Bug reports and feature requests:** [GitHub Issues](https://github.com/kieran-tanner-9/Bosch-eBike-Smart-System-Home-Assistant-Integration/issues)
+- **Documentation:** [GitHub Repository](https://github.com/kieran-tanner-9/Bosch-eBike-Smart-System-Home-Assistant-Integration)

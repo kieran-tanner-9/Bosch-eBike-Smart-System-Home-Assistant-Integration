@@ -39,7 +39,11 @@ def inject_ha_stubs() -> None:
     # -----------------------------------------------------------------------
     # homeassistant.core
     # -----------------------------------------------------------------------
-    ha_core = _make_module("homeassistant.core", HomeAssistant=object)
+    def callback(func: Any) -> Any:
+        """Minimal callback decorator stub — returns the function unchanged."""
+        return func
+
+    ha_core = _make_module("homeassistant.core", HomeAssistant=object, callback=callback)
     sys.modules["homeassistant.core"] = ha_core
 
     # -----------------------------------------------------------------------
@@ -48,7 +52,33 @@ def inject_ha_stubs() -> None:
     class ConfigEntry:
         options: dict = {}
 
-    ha_ce = _make_module("homeassistant.config_entries", ConfigEntry=ConfigEntry)
+    class OptionsFlow:
+        """Minimal OptionsFlow stub."""
+
+        def __init__(self, config_entry: Any = None) -> None:
+            self.config_entry = config_entry
+
+        def async_create_entry(self, title: str = "", data: dict | None = None) -> dict:
+            return {"type": "create_entry", "title": title, "data": data or {}}
+
+        def async_show_form(
+            self,
+            step_id: str = "",
+            data_schema: Any = None,
+            errors: dict | None = None,
+        ) -> dict:
+            return {
+                "type": "form",
+                "step_id": step_id,
+                "data_schema": data_schema,
+                "errors": errors or {},
+            }
+
+    ha_ce = _make_module(
+        "homeassistant.config_entries",
+        ConfigEntry=ConfigEntry,
+        OptionsFlow=OptionsFlow,
+    )
     sys.modules["homeassistant.config_entries"] = ha_ce
 
     # -----------------------------------------------------------------------
@@ -169,6 +199,37 @@ def inject_ha_stubs() -> None:
 
         def __class_getitem__(cls, item: Any) -> Any:
             return cls
+
+        def __init__(
+            self,
+            hass: Any = None,
+            logger: Any = None,
+            *,
+            name: str = "",
+            config_entry: Any = None,
+            update_interval: Any = None,
+            **kwargs: Any,
+        ) -> None:
+            self.hass = hass
+            self.logger = logger
+            self.name = name
+            self.config_entry = config_entry
+            self.update_interval = update_interval
+            self.data: Any = None
+            self.last_update_success: bool = True
+
+        async def _async_update_data(self) -> Any:
+            """Override in subclasses."""
+            return None
+
+        async def _async_refresh(self) -> None:
+            """Override in subclasses to add back-off logic."""
+            try:
+                self.data = await self._async_update_data()
+                self.last_update_success = True
+            except Exception:
+                self.last_update_success = False
+                raise
 
     ha_uc = _make_module(
         "homeassistant.helpers.update_coordinator",
@@ -364,6 +425,11 @@ def inject_ha_stubs() -> None:
         DOMAIN: str = ""
         VERSION: int = 1
 
+        def __init_subclass__(cls, domain: str = "", **kwargs: Any) -> None:
+            super().__init_subclass__(**kwargs)
+            if domain:
+                cls.DOMAIN = domain
+
         def __init__(self) -> None:
             pass
 
@@ -371,6 +437,43 @@ def inject_ha_stubs() -> None:
         def logger(self):
             import logging
             return logging.getLogger(__name__)
+
+        def async_abort(self, reason: str, description_placeholders: dict | None = None) -> dict:
+            """Return an abort result dict."""
+            return {"type": "abort", "reason": reason}
+
+        def async_show_form(
+            self,
+            step_id: str = "",
+            data_schema: Any = None,
+            errors: dict | None = None,
+            description_placeholders: dict | None = None,
+        ) -> dict:
+            """Return a form result dict."""
+            return {
+                "type": "form",
+                "step_id": step_id,
+                "data_schema": data_schema,
+                "errors": errors or {},
+            }
+
+        def async_create_entry(
+            self,
+            title: str = "",
+            data: dict | None = None,
+            options: dict | None = None,
+        ) -> dict:
+            """Return a create_entry result dict."""
+            return {
+                "type": "create_entry",
+                "title": title,
+                "data": data or {},
+                "options": options or {},
+            }
+
+        async def async_step_user(self, user_input: Any = None) -> dict:
+            """Default user step — subclasses override this."""
+            return self.async_show_form(step_id="user")
 
     ha_oauth2_flow = _make_module(
         "homeassistant.helpers.config_entry_oauth2_flow",
